@@ -1,0 +1,35 @@
+# version: '3.9'
+
+services:
+  database:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASS}
+    # ports:
+    #  - '5433:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB']
+      interval: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      target: dev
+    command: ['npm', 'run', 'start:dev'] # hot reload
+    volumes:
+      - .:/app
+      - /app/node_modules
+    env_file: .env
+    ports:
+      - '3000:3000'
+    depends_on:
+      database:
+        condition: service_healthy
+
+volumes:
+  pgdata:

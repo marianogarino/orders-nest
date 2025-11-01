@@ -1,0 +1,98 @@
+{
+  "v": 10,
+  "name": "Orders",
+  "folders": [],
+  "requests": [
+    {
+      "v": "16",
+      "name": "Get all",
+      "method": "GET",
+      "endpoint": "http://localhost:3000/orders",
+      "params": [],
+      "headers": [],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "none",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_mgyijz50_bf3ccf9e-ee63-4e48-8790-64176e5ccb05"
+    },
+    {
+      "v": "16",
+      "name": "Create order",
+      "method": "POST",
+      "endpoint": "http://localhost:3000/orders",
+      "params": [],
+      "headers": [],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "none",
+        "authActive": true
+      },
+      "body": {
+        "contentType": "application/json",
+        "body": "{\n  \"clientName\": \"Ana López\",\n  \"items\": [\n    { \"description\": \"Ceviche\", \"quantity\": 2, \"unitPrice\": 5},\n    { \"description\": \"Chicha morada\", \"quantity\": 1, \"unitPrice\": 10 }\n  ]\n}\n"
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_mgyijz50_bf3ccf9e-ee63-4e48-8790-64176e5ccb05"
+    },
+    {
+      "v": "16",
+      "name": "Get by id",
+      "method": "GET",
+      "endpoint": "http://localhost:3000/orders/6e00b76c-f529-4ded-9318-f4acfd8f1d26",
+      "params": [],
+      "headers": [],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "none",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_mgyijz50_bf3ccf9e-ee63-4e48-8790-64176e5ccb05"
+    },
+    {
+      "v": "16",
+      "name": "Advance order",
+      "method": "POST",
+      "endpoint": "http://localhost:3000/orders/d746a4b7-a583-4642-b691-9ba91c5dc6f0/advance",
+      "params": [],
+      "headers": [],
+      "preRequestScript": "",
+      "testScript": "",
+      "auth": {
+        "authType": "none",
+        "authActive": true
+      },
+      "body": {
+        "contentType": null,
+        "body": null
+      },
+      "requestVariables": [],
+      "responses": {},
+      "_ref_id": "req_mgyijz50_bf3ccf9e-ee63-4e48-8790-64176e5ccb05"
+    }
+  ],
+  "auth": {
+    "authType": "none",
+    "authActive": true
+  },
+  "headers": [],
+  "variables": [],
+  "_ref_id": "coll_mhg70q93_5001a56c-4d73-4640-aa1e-cabf6691654b"
+}
