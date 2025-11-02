@@ -8,6 +8,8 @@ import { Order } from './orders/entities/orders.entity';
 import { CacheModule } from '@nestjs/cache-manager';
 import Keyv from 'keyv';
 import KeyvRedis from '@keyv/redis';
+import { ScheduleModule } from '@nestjs/schedule';
+import { OrdersCleanupJob } from './orders/orders-cleanup.job';
 
 @Module({
   imports: [
@@ -35,13 +37,13 @@ import KeyvRedis from '@keyv/redis';
         const store = new Keyv({ store: new KeyvRedis(redisUrl) });
 
         return {
-          // uno o varios stores (array)
           stores: [store],
-          ttl: defaultTtlMs, // ⚠️ milisegundos
+          ttl: defaultTtlMs, // milisegundos
         };
       },
     }),
     OrdersModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],
