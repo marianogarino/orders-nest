@@ -2,13 +2,16 @@ import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { OrdersModule } from './orders/orders.module';
 import { Order } from './orders/entities/orders.entity';
+import { CacheModule } from '@nestjs/cache-manager';
+import Keyv from 'keyv';
+import KeyvRedis from '@keyv/redis';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     SequelizeModule.forRoot({
       dialect: 'postgres',
       host: process.env.DB_HOST,
@@ -20,6 +23,23 @@ import { Order } from './orders/entities/orders.entity';
       synchronize: true,
       sync: { alter: true },
       models: [Order],
+    }),
+    CacheModule.registerAsync({
+      isGlobal: true,
+      inject: [ConfigService],
+      useFactory: async (config: ConfigService) => {
+        const redisUrl = config.get<string>('REDIS_URL', 'redis://redis:6379');
+        const defaultTtlMs = Number(
+          config.get<string>('REDIS_CACHE_TTL_SECONDS') ?? '60000',
+        );
+        const store = new Keyv({ store: new KeyvRedis(redisUrl) });
+
+        return {
+          // uno o varios stores (array)
+          stores: [store],
+          ttl: defaultTtlMs, // ⚠️ milisegundos
+        };
+      },
     }),
     OrdersModule,
   ],

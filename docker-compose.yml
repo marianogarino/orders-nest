@@ -20,7 +20,7 @@ services:
     build:
       context: .
       target: dev
-    command: ['npm', 'run', 'start:dev'] # hot reload
+    command: ['npm', 'run', 'start:dev']
     volumes:
       - .:/app
       - /app/node_modules
@@ -30,6 +30,32 @@ services:
     depends_on:
       database:
         condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - '6379:6379'
+    command: ['redis-server', '--appendonly', 'yes']
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  # UI opcional para ver claves/TTL/etc.
+  redisinsight:
+    image: redis/redisinsight:latest
+    container_name: redisinsight
+    ports:
+      - '5540:5540'
+    depends_on:
+      - redis
 
 volumes:
   pgdata:
+  redis-data:

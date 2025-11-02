@@ -11,6 +11,7 @@ Backend API REST para gestionar órdenes. Permite crealas, listarlas a todas, de
 - **NestJS**
 - **Sequelize** con **Postgres**
 - **Jest**
+- **Redis**
 - **Docker**
 
 ---

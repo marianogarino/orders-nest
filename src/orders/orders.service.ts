@@ -1,23 +1,40 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Order } from './entities/orders.entity';
 import { InjectModel } from '@nestjs/sequelize';
 import {
   ORDER_STATUS_TRANSITIONS,
   OrderStatus,
 } from './entities/orderStatus.enum';
+import type { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 @Injectable()
 export class OrdersService {
   private readonly logger = new Logger(OrdersService.name, { timestamp: true });
 
-  constructor(@InjectModel(Order) private orderModel: typeof Order) {}
+  constructor(
+    @InjectModel(Order) private orderModel: typeof Order,
+    @Inject(CACHE_MANAGER) private cache: Cache,
+  ) {}
 
   async create(orderData: Partial<Order>): Promise<Order> {
     return this.orderModel.create(orderData);
   }
 
   async findAll(): Promise<Order[]> {
-    return this.orderModel.findAll();
+    const cacheKey = 'cache_orders';
+    const cached = await this.cache.get<Order[]>(cacheKey);
+
+    if (cached) {
+      console.log('cached');
+      return cached;
+    }
+
+    const orders = await this.orderModel.findAll();
+
+    await this.cache.set(cacheKey, orders, 30 * 1000);
+
+    return orders;
   }
 
   async findOne(id: string): Promise<Order | null> {
